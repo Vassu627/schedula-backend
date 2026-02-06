@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 16, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/91939/schedula-backend/pages/api/hello.ts"],"sourcesContent":["import type { NextApiRequest, NextApiResponse } from 'next';\n\ntype Data = {\n  message: string;\n};\n\nexport default function handler(\n  req: NextApiRequest,\n  res: NextApiResponse<Data>\n) {\n  res.status(200).json({ message: 'Hello' });\n}\n"],"names":[],"mappings":";;;;AAMe,SAAS,QACtB,GAAmB,EACnB,GAA0B;IAE1B,IAAI,MAAM,CAAC,KAAK,IAAI,CAAC;QAAE,SAAS;IAAQ;AAC1C"}}]
-}
