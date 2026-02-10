@@ -10,11 +10,19 @@ export class UsersService {
     private usersRepo: Repository<User>,
   ) {}
 
-  async findByGoogleId(googleId: string) {
+  async findByGoogleId(googleId: string): Promise<User | null> {
     return this.usersRepo.findOne({ where: { googleId } });
   }
 
-  async createUser(data: Partial<User>) {
+  async findByEmail(email: string): Promise<User | null> {
+    return this.usersRepo.findOne({ where: { email } });
+  }
+
+  async create(data: {
+    email: string;
+    name: string;
+    googleId: string;
+  }): Promise<User> {
     const user = this.usersRepo.create(data);
     return this.usersRepo.save(user);
   }

@@ -1,9 +1,13 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { OAuth2Client, TokenPayload } from 'google-auth-library';
+import { User } from '../users/user.entity';
 
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+interface GoogleUser {
+  googleId: string;
+  email: string | null;
+  name: string;
+}
 
 @Injectable()
 export class AuthService {
@@ -12,45 +16,41 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async verifyGoogleToken(idToken: string): Promise<TokenPayload> {
-    const ticket = await client.verifyIdToken({
-      idToken,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
-
-    const payload = ticket.getPayload();
-
-    if (!payload) {
-      throw new UnauthorizedException('Invalid Google payload');
+  async handleGoogleLogin(googleUser: GoogleUser): Promise<{
+    access_token: string;
+    user: User;
+  }> {
+    if (!googleUser.email) {
+      throw new Error('Google account has no email');
     }
 
-    return payload;
-  }
-
-  async googleLogin(idToken: string, role: string) {
-    const payload = await this.verifyGoogleToken(idToken);
-
-    let user = await this.usersService.findByGoogleId(payload.sub);
+    let user = await this.usersService.findByEmail(googleUser.email);
 
     if (!user) {
-      user = await this.usersService.createUser({
-        googleId: payload.sub,
-        email: payload.email,
-        name: payload.name,
-        picture: payload.picture,
-        role: role || 'patient',
+      user = await this.usersService.create({
+        email: googleUser.email,
+        name: googleUser.name,
+        googleId: googleUser.googleId,
       });
     }
 
-    const token = this.jwtService.sign({
+    const payload = {
       sub: user.id,
       email: user.email,
-      role: user.role,
-    });
+    };
+
+    const token = this.jwtService.sign(payload);
 
     return {
       access_token: token,
-      user,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        googleId: '',
+        picture: '',
+      },
     };
   }
 }
