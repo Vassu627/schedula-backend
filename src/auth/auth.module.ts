@@ -7,12 +7,17 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
 import { GoogleStrategy } from './google.strategy';
 import { JwtStrategy } from './jwt.strategy';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Doctor } from '../doctors/doctor.entity';
+import { Patient } from '../patients/patient.entity';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
     ConfigModule,
+    TypeOrmModule.forFeature([Doctor, Patient]),
+
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -22,6 +27,7 @@ import { JwtStrategy } from './jwt.strategy';
       }),
     }),
   ],
+
   providers: [AuthService, GoogleStrategy, JwtStrategy],
   controllers: [AuthController],
 })
