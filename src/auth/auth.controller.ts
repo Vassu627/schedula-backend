@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards, Post, Body } from '@nestjs/common';
 import { GoogleAuthGuard } from './google-auth.guard';
 import express from 'express';
 import { AuthService } from './auth.service';
@@ -13,6 +13,7 @@ interface GoogleUser {
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
+
   @Get('profile')
   @UseGuards(JwtAuthGuard)
   getProfile(@Req() req: express.Request) {
@@ -21,13 +22,21 @@ export class AuthController {
       user: req.user,
     };
   }
+
+  // Step 1: Google login
   @Get('google')
   @UseGuards(GoogleAuthGuard)
   async googleAuth(): Promise<void> {}
 
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
-  async googleAuthRedirect(@Req() req: express.Request & { user: GoogleUser }) {
+  async googleAuthRedirect(@Req() req: any) {
     return this.authService.handleGoogleLogin(req.user);
+  }
+
+  // Step 2: Role selection
+  @Post('select-role')
+  async selectRole(@Body() body: any) {
+    return this.authService.selectRole(body);
   }
 }
