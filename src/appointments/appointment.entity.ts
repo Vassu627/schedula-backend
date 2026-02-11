@@ -1,0 +1,44 @@
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  Column,
+  CreateDateColumn,
+} from 'typeorm';
+import { Doctor } from '../doctors/doctor.entity';
+import { Patient } from '../patients/patient.entity';
+
+export enum AppointmentStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  CANCELLED = 'CANCELLED',
+}
+
+@Entity()
+export class Appointment {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToOne(() => Doctor, (doctor) => doctor.appointments, {
+    eager: true,
+  })
+  doctor: Doctor;
+
+  @ManyToOne(() => Patient, (patient) => patient.appointments, {
+    eager: true,
+  })
+  patient: Patient;
+
+  @Column({
+    type: 'enum',
+    enum: AppointmentStatus,
+    default: AppointmentStatus.PENDING,
+  })
+  status: AppointmentStatus;
+
+  @Column({ type: 'timestamp' })
+  time: Date;
+
+  @CreateDateColumn()
+  createdAt: Date;
+}
