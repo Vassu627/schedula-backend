@@ -1,6 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import { Doctor } from '../doctors/doctor.entity';
+import { Patient } from '../patients/patient.entity';
 
-@Entity()
+export enum Role {
+  DOCTOR = 'doctor',
+  PATIENT = 'patient',
+}
+
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -17,6 +24,16 @@ export class User {
   @Column({ nullable: true })
   picture: string;
 
-  @Column({ default: 'patient' })
-  role: string;
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.PATIENT,
+  })
+  role: Role;
+
+  @OneToOne(() => Doctor, (doctor) => doctor.user)
+  doctor?: Doctor;
+
+  @OneToOne(() => Patient, (patient) => patient.user)
+  patient?: Patient;
 }
