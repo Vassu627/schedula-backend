@@ -1,6 +1,9 @@
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { User } from '../users/user.entity';
+import { User, Role } from '../users/user.entity';
+import { Doctor } from '../doctors/doctor.entity';
+import { Patient } from '../patients/patient.entity';
+import { Repository } from 'typeorm';
 interface GoogleUser {
     googleId: string;
     email: string | null;
@@ -9,10 +12,13 @@ interface GoogleUser {
 export declare class AuthService {
     private usersService;
     private jwtService;
-    constructor(usersService: UsersService, jwtService: JwtService);
+    private doctorRepo;
+    private patientRepo;
+    constructor(usersService: UsersService, jwtService: JwtService, doctorRepo: Repository<Doctor>, patientRepo: Repository<Patient>);
     handleGoogleLogin(googleUser: GoogleUser): Promise<{
         access_token: string;
         user: User;
     }>;
+    selectRole(userId: number, role: Role): Promise<User>;
 }
 export {};

@@ -1,5 +1,6 @@
 import express from 'express';
 import { AuthService } from './auth.service';
+import { Role } from '../users/user.entity';
 export declare class AuthController {
     private authService;
     constructor(authService: AuthService);
@@ -12,5 +13,7 @@ export declare class AuthController {
         access_token: string;
         user: import("../users/user.entity").User;
     }>;
-    selectRole(body: any): Promise<any>;
+    selectRole(req: any, body: {
+        role: Role;
+    }): Promise<import("../users/user.entity").User>;
 }
