@@ -33,4 +33,15 @@ export class UsersService {
 
     return await this.usersRepo.save(user);
   }
+
+  async updateRole(userId: number, role: Role): Promise<User> {
+    const user = await this.usersRepo.findOne({ where: { id: userId } });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    user.role = role;
+    return this.usersRepo.save(user);
+  }
 }
