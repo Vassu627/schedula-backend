@@ -1,12 +1,16 @@
+import express from 'express';
 import { AuthService } from './auth.service';
 export declare class AuthController {
     private authService;
     constructor(authService: AuthService);
-    googleLogin(body: {
-        idToken: string;
-        role?: string;
-    }): Promise<{
+    getProfile(req: express.Request): {
+        message: string;
+        user: Express.User | undefined;
+    };
+    googleAuth(): Promise<void>;
+    googleAuthRedirect(req: any): Promise<{
         access_token: string;
         user: import("../users/user.entity").User;
     }>;
+    selectRole(body: any): Promise<any>;
 }

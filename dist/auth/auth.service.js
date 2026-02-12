@@ -13,8 +13,6 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const users_service_1 = require("../users/users.service");
-const google_auth_library_1 = require("google-auth-library");
-const client = new google_auth_library_1.OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 let AuthService = class AuthService {
     usersService;
     jwtService;
@@ -22,34 +20,21 @@ let AuthService = class AuthService {
         this.usersService = usersService;
         this.jwtService = jwtService;
     }
-    async verifyGoogleToken(idToken) {
-        const ticket = await client.verifyIdToken({
-            idToken,
-            audience: process.env.GOOGLE_CLIENT_ID,
-        });
-        const payload = ticket.getPayload();
-        if (!payload) {
-            throw new common_1.UnauthorizedException('Invalid Google payload');
+    async handleGoogleLogin(googleUser) {
+        const { googleId, email, name } = googleUser;
+        if (!email) {
+            throw new Error('Google account has no email');
         }
-        return payload;
-    }
-    async googleLogin(idToken, role) {
-        const payload = await this.verifyGoogleToken(idToken);
-        let user = await this.usersService.findByGoogleId(payload.sub);
+        let user = await this.usersService.findByGoogleId(googleId);
         if (!user) {
-            user = await this.usersService.createUser({
-                googleId: payload.sub,
-                email: payload.email,
-                name: payload.name,
-                picture: payload.picture,
-                role: role || 'patient',
+            user = await this.usersService.create({
+                googleId,
+                email,
+                name,
             });
         }
-        const token = this.jwtService.sign({
-            sub: user.id,
-            email: user.email,
-            role: user.role,
-        });
+        const payload = { sub: user.id, role: user.role };
+        const token = this.jwtService.sign(payload);
         return {
             access_token: token,
             user,

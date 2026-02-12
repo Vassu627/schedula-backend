@@ -25,9 +25,17 @@ let UsersService = class UsersService {
     async findByGoogleId(googleId) {
         return this.usersRepo.findOne({ where: { googleId } });
     }
-    async createUser(data) {
-        const user = this.usersRepo.create(data);
-        return this.usersRepo.save(user);
+    async findByEmail(email) {
+        return this.usersRepo.findOne({ where: { email } });
+    }
+    async create(data) {
+        const user = this.usersRepo.create({
+            email: data.email,
+            name: data.name,
+            googleId: data.googleId,
+            role: data.role || user_entity_1.Role.PATIENT,
+        });
+        return await this.usersRepo.save(user);
     }
 };
 exports.UsersService = UsersService;
