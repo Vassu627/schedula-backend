@@ -18,6 +18,28 @@ export class PatientsService {
     private appointmentRepo: Repository<Appointment>,
   ) {}
 
+  async updateProfile(
+    userId: number,
+    data: {
+      age?: number;
+      gender?: string;
+    },
+  ) {
+    const patient = await this.patientRepo.findOne({
+      where: { user: { id: userId } },
+      relations: ['user'],
+    });
+
+    if (!patient) {
+      throw new Error('Patient not found');
+    }
+
+    patient.age = data.age ?? patient.age;
+    patient.gender = data.gender ?? patient.gender;
+
+    return this.patientRepo.save(patient);
+  }
+
   async bookAppointment(userId: number, doctorId: number, time: Date) {
     const patient = await this.patientRepo.findOne({
       where: { user: { id: userId } },
