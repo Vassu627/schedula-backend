@@ -4,5 +4,11 @@ export declare class UsersService {
     private usersRepo;
     constructor(usersRepo: Repository<User>);
     findByGoogleId(googleId: string): Promise<User | null>;
-    createUser(data: Partial<User>): Promise<User>;
+    findByEmail(email: string): Promise<User | null>;
+    create(data: {
+        email: string;
+        name: string;
+        googleId: string;
+        role?: string;
+    }): Promise<User>;
 }
