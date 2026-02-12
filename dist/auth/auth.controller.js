@@ -36,8 +36,10 @@ let AuthController = class AuthController {
     async googleAuthRedirect(req) {
         return this.authService.handleGoogleLogin(req.user);
     }
-    async selectRole(body) {
-        return this.authService.selectRole(body);
+    async selectRole(req, body) {
+        console.log('REQ USER:', req.user);
+        const userId = req.user.sub;
+        return this.authService.selectRole(userId, body.role);
     }
 };
 exports.AuthController = AuthController;
@@ -65,10 +67,12 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "googleAuthRedirect", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('select-role'),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "selectRole", null);
 exports.AuthController = AuthController = __decorate([
