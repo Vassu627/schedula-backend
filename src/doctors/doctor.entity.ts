@@ -14,12 +14,21 @@ export class Doctor {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ default: false })
-  isVerified: boolean;
-
   @OneToOne(() => User, (user) => user.doctor)
   @JoinColumn()
   user: User;
+
+  @Column({ nullable: true })
+  experience: number;
+
+  @Column({ nullable: true })
+  licenseNo: string;
+
+  @Column({ nullable: true })
+  fee: number;
+
+  @Column({ default: false })
+  isVerified: boolean;
 
   @OneToMany(() => Appointment, (appointment) => appointment.doctor)
   appointments: Appointment[];

@@ -30,19 +30,27 @@ export class DoctorsService {
     return doctor?.appointments || [];
   }
 
-  async updateAppointmentStatus(
-    appointmentId: number,
-    status: AppointmentStatus,
+  async updateProfile(
+    userId: number,
+    data: {
+      experience?: number;
+      licenseNo?: string;
+      fee?: number;
+    },
   ) {
-    const appointment = await this.appointmentRepo.findOne({
-      where: { id: appointmentId },
+    const doctor = await this.doctorRepo.findOne({
+      where: { user: { id: userId } },
+      relations: ['user'],
     });
 
-    if (!appointment) {
-      throw new Error('Appointment not found');
+    if (!doctor) {
+      throw new Error('Doctor not found');
     }
 
-    appointment.status = status;
-    return this.appointmentRepo.save(appointment);
+    doctor.experience = data.experience ?? doctor.experience;
+    doctor.licenseNo = data.licenseNo ?? doctor.licenseNo;
+    doctor.fee = data.fee ?? doctor.fee;
+
+    return this.doctorRepo.save(doctor);
   }
 }
