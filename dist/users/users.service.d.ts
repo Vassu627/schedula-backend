@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { User, Role } from './user.entity';
 export declare class UsersService {
     private usersRepo;
     constructor(usersRepo: Repository<User>);
@@ -11,4 +11,5 @@ export declare class UsersService {
         googleId: string;
         role?: string;
     }): Promise<User>;
+    updateRole(userId: number, role: Role): Promise<User>;
 }

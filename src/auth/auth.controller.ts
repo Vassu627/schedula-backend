@@ -3,6 +3,7 @@ import { GoogleAuthGuard } from './google-auth.guard';
 import express from 'express';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { Role } from '../users/user.entity';
 
 interface GoogleUser {
   googleId: string;
@@ -35,8 +36,11 @@ export class AuthController {
   }
 
   // Step 2: Role selection
+  @UseGuards(JwtAuthGuard)
   @Post('select-role')
-  async selectRole(@Body() body: any) {
-    return this.authService.selectRole(body);
+  async selectRole(@Req() req, @Body() body: { role: Role }) {
+    console.log('REQ USER:', req.user);
+    const userId = req.user.sub;
+    return this.authService.selectRole(userId, body.role);
   }
 }

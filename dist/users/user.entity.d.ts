@@ -2,7 +2,8 @@ import { Doctor } from '../doctors/doctor.entity';
 import { Patient } from '../patients/patient.entity';
 export declare enum Role {
     DOCTOR = "doctor",
-    PATIENT = "patient"
+    PATIENT = "patient",
+    ADMIN = "admin"
 }
 export declare class User {
     id: number;
