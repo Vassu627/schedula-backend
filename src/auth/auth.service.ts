@@ -15,42 +15,36 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
-
   async handleGoogleLogin(googleUser: GoogleUser): Promise<{
     access_token: string;
     user: User;
   }> {
-    if (!googleUser.email) {
+    const { googleId, email, name } = googleUser;
+
+    // Safety check
+    if (!email) {
       throw new Error('Google account has no email');
     }
 
-    let user = await this.usersService.findByEmail(googleUser.email);
+    // 1. Check if user exists
+    let user = await this.usersService.findByGoogleId(googleId);
 
+    // 2. If not, create user
     if (!user) {
       user = await this.usersService.create({
-        email: googleUser.email,
-        name: googleUser.name,
-        googleId: googleUser.googleId,
+        googleId,
+        email,
+        name,
       });
     }
 
-    const payload = {
-      sub: user.id,
-      email: user.email,
-    };
-
+    // 3. Generate JWT
+    const payload = { sub: user.id, role: user.role };
     const token = this.jwtService.sign(payload);
 
     return {
       access_token: token,
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-        googleId: '',
-        picture: '',
-      },
+      user,
     };
   }
 }
