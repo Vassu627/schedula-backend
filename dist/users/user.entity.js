@@ -9,8 +9,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
+exports.User = exports.Role = void 0;
 const typeorm_1 = require("typeorm");
+const doctor_entity_1 = require("../doctors/doctor.entity");
+const patient_entity_1 = require("../patients/patient.entity");
+var Role;
+(function (Role) {
+    Role["DOCTOR"] = "doctor";
+    Role["PATIENT"] = "patient";
+})(Role || (exports.Role = Role = {}));
 let User = class User {
     id;
     googleId;
@@ -18,6 +25,8 @@ let User = class User {
     name;
     picture;
     role;
+    doctor;
+    patient;
 };
 exports.User = User;
 __decorate([
@@ -41,10 +50,22 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "picture", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: 'patient' }),
+    (0, typeorm_1.Column)({
+        type: 'enum',
+        enum: Role,
+        default: Role.PATIENT,
+    }),
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => doctor_entity_1.Doctor, (doctor) => doctor.user),
+    __metadata("design:type", doctor_entity_1.Doctor)
+], User.prototype, "doctor", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => patient_entity_1.Patient, (patient) => patient.user),
+    __metadata("design:type", patient_entity_1.Patient)
+], User.prototype, "patient", void 0);
 exports.User = User = __decorate([
-    (0, typeorm_1.Entity)()
+    (0, typeorm_1.Entity)('users')
 ], User);
 //# sourceMappingURL=user.entity.js.map
