@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { User } from '../users/user.entity';
 import { Appointment } from '../appointments/appointment.entity';
+import { DoctorProfile } from '../doctor-profiles/doctor-profile.entity';
 
 @Entity()
 export class Doctor {
@@ -32,4 +33,7 @@ export class Doctor {
 
   @OneToMany(() => Appointment, (appointment) => appointment.doctor)
   appointments: Appointment[];
+
+  @OneToOne(() => DoctorProfile, (profile) => profile.doctor)
+  profile: DoctorProfile;
 }
