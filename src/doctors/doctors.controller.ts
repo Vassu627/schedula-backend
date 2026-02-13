@@ -1,32 +1,23 @@
-import {
-  Controller,
-  Get,
-  Patch,
-  Param,
-  Body,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
 import { DoctorsService } from './doctors.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { AppointmentStatus } from '../appointments/appointment.entity';
 
-@Controller('api/v1/doctors')
+@Controller('doctors')
 export class DoctorsController {
-  constructor(private readonly doctorsService: DoctorsService) {}
+  constructor(private doctorsService: DoctorsService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get('appointments')
-  getAppointments(@Req() req) {
-    return this.doctorsService.getAppointments(req.user.id);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Patch('appointments/:id')
-  updateStatus(@Param('id') id: number, @Body('status') status: string) {
-    return this.doctorsService.updateAppointmentStatus(
-      Number(id),
-      status as AppointmentStatus,
-    );
+  @Post('profile')
+  async updateProfile(
+    @Req() req,
+    @Body()
+    body: {
+      experience?: number;
+      licenseNo?: string;
+      fee?: number;
+    },
+  ) {
+    const userId = req.user.sub;
+    return this.doctorsService.updateProfile(userId, body);
   }
 }
