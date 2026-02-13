@@ -18,6 +18,7 @@ const patients_module_1 = require("./patients/patients.module");
 const appointments_module_1 = require("./appointments/appointments.module");
 const doctor_profiles_module_1 = require("./doctor-profiles/doctor-profiles.module");
 const specializations_module_1 = require("./specializations/specializations.module");
+const availability_module_1 = require("./availability/availability.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -45,6 +46,7 @@ exports.AppModule = AppModule = __decorate([
             appointments_module_1.AppointmentsModule,
             doctor_profiles_module_1.DoctorProfilesModule,
             specializations_module_1.SpecializationsModule,
+            availability_module_1.AvailabilityModule,
         ],
     })
 ], AppModule);
