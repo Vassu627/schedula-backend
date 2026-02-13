@@ -16,6 +16,8 @@ const auth_module_1 = require("./auth/auth.module");
 const doctors_module_1 = require("./doctors/doctors.module");
 const patients_module_1 = require("./patients/patients.module");
 const appointments_module_1 = require("./appointments/appointments.module");
+const doctor_profiles_module_1 = require("./doctor-profiles/doctor-profiles.module");
+const specializations_module_1 = require("./specializations/specializations.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -41,6 +43,8 @@ exports.AppModule = AppModule = __decorate([
             doctors_module_1.DoctorsModule,
             patients_module_1.PatientsModule,
             appointments_module_1.AppointmentsModule,
+            doctor_profiles_module_1.DoctorProfilesModule,
+            specializations_module_1.SpecializationsModule,
         ],
     })
 ], AppModule);
