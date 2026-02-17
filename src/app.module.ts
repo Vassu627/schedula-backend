@@ -10,6 +10,7 @@ import { AppointmentsModule } from './appointments/appointments.module';
 import { DoctorProfilesModule } from './doctor-profiles/doctor-profiles.module';
 import { SpecializationsModule } from './specializations/specializations.module';
 import { AvailabilityModule } from './availability/availability.module';
+import { SlotsModule } from './slots/slots.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -36,6 +37,7 @@ import { AvailabilityModule } from './availability/availability.module';
     DoctorProfilesModule,
     SpecializationsModule,
     AvailabilityModule,
+    SlotsModule,
   ],
 })
 export class AppModule {}
