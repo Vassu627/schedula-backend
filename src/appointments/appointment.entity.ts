@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Doctor } from '../doctors/doctor.entity';
 import { Patient } from '../patients/patient.entity';
+import { Slot } from '../slots/slot.entity';
 
 export enum AppointmentStatus {
   PENDING = 'PENDING',
@@ -29,15 +30,15 @@ export class Appointment {
   })
   patient: Patient;
 
+  @ManyToOne(() => Slot, { eager: true })
+  slot: Slot;
+
   @Column({
     type: 'enum',
     enum: AppointmentStatus,
     default: AppointmentStatus.PENDING,
   })
   status: AppointmentStatus;
-
-  @Column({ type: 'timestamp' })
-  time: Date;
 
   @CreateDateColumn()
   createdAt: Date;
