@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Patient } from './patient.entity';
 import { Doctor } from '../doctors/doctor.entity';
 import { Appointment } from '../appointments/appointment.entity';
+//import { Slot } from 'src/slots/slot.entity';
 
 @Injectable()
 export class PatientsService {
@@ -40,7 +41,7 @@ export class PatientsService {
     return this.patientRepo.save(patient);
   }
 
-  async bookAppointment(userId: number, doctorId: number, time: Date) {
+  /* async bookAppointment(userId: number, doctorId: number, time: Date) {
     const patient = await this.patientRepo.findOne({
       where: { user: { id: userId } },
       relations: ['user'],
@@ -61,10 +62,11 @@ export class PatientsService {
     const appointment = new Appointment();
     appointment.doctor = doctor;
     appointment.patient = patient;
-    appointment.time = time;
+    appointment.slot = slot;
 
     return this.appointmentRepo.save(appointment);
   }
+    */
 
   async getAppointments(userId: number) {
     const patient = await this.patientRepo.findOne({
