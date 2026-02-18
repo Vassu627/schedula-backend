@@ -1,7 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Availability } from './availability.entity';
+import {
+  Availability,
+  AvailabilityType,
+  SchedulingType,
+} from './availability.entity';
 import { Doctor } from '../doctors/doctor.entity';
 import { SetAvailabilityDto } from './dto/set-availability.dto';
 import { Slot } from '../slots/slot.entity';
@@ -18,10 +26,6 @@ export class AvailabilityService {
     @InjectRepository(Slot)
     private slotRepo: Repository<Slot>,
   ) {}
-
-  // -------------------------------
-  // CREATE AVAILABILITY + SLOTS
-  // -------------------------------
   async setAvailability(doctorUserId: number, dto: SetAvailabilityDto) {
     const doctor = await this.doctorRepo.findOne({
       where: { user: { id: doctorUserId } },
@@ -32,27 +36,60 @@ export class AvailabilityService {
       throw new NotFoundException('Doctor not found');
     }
 
+    if (
+      dto.availabilityType === AvailabilityType.RECURRING &&
+      dto.dayOfWeek === undefined
+    ) {
+      throw new BadRequestException(
+        'dayOfWeek is required for recurring availability',
+      );
+    }
+
+    if (dto.availabilityType === AvailabilityType.CUSTOM && !dto.date) {
+      throw new BadRequestException('date is required for custom availability');
+    }
+
+    let slotDuration = dto.slotDuration;
+    let maxPatients = dto.maxPatientsPerSlot;
+
+    if (dto.schedulingType === SchedulingType.STREAM) {
+      if (!dto.slotDuration) {
+        throw new BadRequestException(
+          'slotDuration is required for stream scheduling',
+        );
+      }
+      maxPatients = 1; // force single patient
+    }
+
+    if (dto.schedulingType === SchedulingType.WAVE) {
+      if (!dto.maxPatientsPerSlot || dto.maxPatientsPerSlot < 1) {
+        throw new BadRequestException(
+          'maxPatientsPerSlot is required for wave scheduling',
+        );
+      }
+      slotDuration = undefined; // not used in wave
+    }
+
     const availability = this.availabilityRepo.create({
       doctor,
+      availabilityType: dto.availabilityType,
       dayOfWeek: dto.dayOfWeek,
+      date: dto.date,
       startTime: dto.startTime,
       endTime: dto.endTime,
-      slotDuration: dto.slotDuration,
-      maxPatientsPerSlot: dto.maxPatientsPerSlot,
+      slotDuration,
+      maxPatientsPerSlot: maxPatients,
+      schedulingType: dto.schedulingType,
     });
 
     const savedAvailability = await this.availabilityRepo.save(availability);
 
-    // generate slots
     const slots = this.generateSlots(doctor, savedAvailability);
     await this.slotRepo.save(slots);
 
     return savedAvailability;
   }
 
-  // -------------------------------
-  // GET AVAILABILITY
-  // -------------------------------
   async getDoctorAvailability(doctorUserId: number) {
     const doctor = await this.doctorRepo.findOne({
       where: { user: { id: doctorUserId } },
@@ -67,9 +104,6 @@ export class AvailabilityService {
     });
   }
 
-  // -------------------------------
-  // UPDATE AVAILABILITY
-  // -------------------------------
   async updateAvailability(
     doctorUserId: number,
     availabilityId: number,
@@ -95,9 +129,6 @@ export class AvailabilityService {
     return this.availabilityRepo.save(availability);
   }
 
-  // -------------------------------
-  // DELETE AVAILABILITY
-  // -------------------------------
   async deleteAvailability(doctorUserId: number, availabilityId: number) {
     const doctor = await this.doctorRepo.findOne({
       where: { user: { id: doctorUserId } },
@@ -120,42 +151,61 @@ export class AvailabilityService {
     return { message: 'Availability deleted' };
   }
 
-  // -------------------------------
-  // SLOT GENERATION LOGIC
-  // -------------------------------
   private generateSlots(doctor: Doctor, availability: Availability) {
     const slots: Slot[] = [];
 
+    const slotDate =
+      availability.availabilityType === AvailabilityType.CUSTOM
+        ? availability.date
+        : new Date().toISOString().split('T')[0];
+
     const start = this.timeToMinutes(availability.startTime);
     const end = this.timeToMinutes(availability.endTime);
-    const duration = availability.slotDuration;
-
-    let current = start;
-
-    while (current + duration <= end) {
-      const slotStart = this.minutesToTime(current);
-      const slotEnd = this.minutesToTime(current + duration);
-
+    const totalDuration = end - start;
+    if (availability.schedulingType === SchedulingType.STREAM) {
       const slot = this.slotRepo.create({
         doctor,
         availability,
-        slotDate: new Date().toISOString().split('T')[0], // today
-        startTime: slotStart,
-        endTime: slotEnd,
-        maxPatients: availability.maxPatientsPerSlot,
+        slotDate,
+        startTime: availability.startTime,
+        endTime: availability.endTime,
+        maxPatients: 1,
         bookedCount: 0,
       });
 
       slots.push(slot);
-      current += duration;
-    }
+    } else if (availability.schedulingType === SchedulingType.WAVE) {
+      const capacity = availability.maxPatientsPerSlot;
 
+      if (!capacity || capacity < 1) {
+        throw new Error('Invalid capacity for wave scheduling');
+      }
+
+      const durationPerPatient = Math.floor(totalDuration / capacity);
+
+      let current = start;
+
+      for (let i = 0; i < capacity; i++) {
+        const slotStart = this.minutesToTime(current);
+        const slotEnd = this.minutesToTime(current + durationPerPatient);
+
+        const slot = this.slotRepo.create({
+          doctor,
+          availability,
+          slotDate,
+          startTime: slotStart,
+          endTime: slotEnd,
+          maxPatients: 1,
+          bookedCount: 0,
+        });
+
+        slots.push(slot);
+        current += durationPerPatient;
+      }
+    }
     return slots;
   }
 
-  // -------------------------------
-  // TIME HELPERS
-  // -------------------------------
   private timeToMinutes(time: string): number {
     const [h, m] = time.split(':').map(Number);
     return h * 60 + m;
