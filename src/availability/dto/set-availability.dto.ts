@@ -1,10 +1,17 @@
-import { IsInt, Min, Max, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsNumber, IsString } from 'class-validator';
+import { AvailabilityType, SchedulingType } from '../availability.entity';
 
 export class SetAvailabilityDto {
-  @IsInt()
-  @Min(0)
-  @Max(6)
-  dayOfWeek: number;
+  @IsEnum(AvailabilityType)
+  availabilityType: AvailabilityType;
+
+  @IsOptional()
+  @IsNumber()
+  dayOfWeek?: number;
+
+  @IsOptional()
+  @IsString()
+  date?: string;
 
   @IsString()
   startTime: string;
@@ -12,11 +19,14 @@ export class SetAvailabilityDto {
   @IsString()
   endTime: string;
 
-  @IsInt()
-  @Min(5)
-  slotDuration: number;
+  @IsOptional()
+  @IsNumber()
+  slotDuration?: number;
 
-  @IsInt()
-  @Min(1)
-  maxPatientsPerSlot: number;
+  @IsOptional()
+  @IsNumber()
+  maxPatientsPerSlot?: number;
+
+  @IsEnum(SchedulingType)
+  schedulingType: SchedulingType;
 }
