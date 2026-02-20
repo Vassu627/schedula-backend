@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Req,
+  UseGuards,
+  Get,
+  Query,
+} from '@nestjs/common';
 import { DoctorsService } from './doctors.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
@@ -19,5 +27,14 @@ export class DoctorsController {
   ) {
     const userId = req.user.sub;
     return this.doctorsService.updateProfile(userId, body);
+  }
+  @Get('search')
+  searchDoctors(@Query() query: any) {
+    return this.doctorsService.searchDoctors(query);
+  }
+
+  @Get('with-availability')
+  getDoctorsWithAvailability() {
+    return this.doctorsService.getDoctorsWithNextAvailability();
   }
 }
