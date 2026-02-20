@@ -11,7 +11,17 @@ export enum SchedulingType {
   WAVE = 'WAVE',
 }
 
-@Entity('availabilities')
+export enum DayOfWeek {
+  MONDAY = 'MONDAY',
+  TUESDAY = 'TUESDAY',
+  WEDNESDAY = 'WEDNESDAY',
+  THURSDAY = 'THURSDAY',
+  FRIDAY = 'FRIDAY',
+  SATURDAY = 'SATURDAY',
+  SUNDAY = 'SUNDAY',
+}
+
+@Entity()
 export class Availability {
   @PrimaryGeneratedColumn()
   id: number;
@@ -19,17 +29,26 @@ export class Availability {
   @ManyToOne(() => Doctor, { onDelete: 'CASCADE' })
   doctor: Doctor;
 
-  @Column({
-    type: 'enum',
-    enum: AvailabilityType,
-    default: AvailabilityType.RECURRING,
-  })
+  @Column({ type: 'enum', enum: AvailabilityType })
   availabilityType: AvailabilityType;
 
+  // For recurring
   @Column({ nullable: true })
-  dayOfWeek: number; // 0–6
+  startDate: string;
 
-  @Column({ type: 'date', nullable: true })
+  @Column({ nullable: true })
+  endDate: string;
+
+  @Column({
+    type: 'enum',
+    enum: DayOfWeek,
+    array: true,
+    nullable: true,
+  })
+  daysOfWeek: DayOfWeek[];
+
+  // For custom
+  @Column({ nullable: true })
   date: string;
 
   @Column()
@@ -38,16 +57,12 @@ export class Availability {
   @Column()
   endTime: string;
 
+  @Column({ type: 'enum', enum: SchedulingType })
+  schedulingType: SchedulingType;
+
   @Column({ nullable: true })
   slotDuration: number;
 
   @Column()
-  maxPatientsPerSlot: number;
-
-  @Column({
-    type: 'enum',
-    enum: SchedulingType,
-    default: SchedulingType.STREAM,
-  })
-  schedulingType: SchedulingType;
+  capacity: number;
 }
