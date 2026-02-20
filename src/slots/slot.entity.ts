@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Doctor } from '../doctors/doctor.entity';
 import { Availability } from '../availability/availability.entity';
 
-@Entity('slots')
+@Entity()
 export class Slot {
   @PrimaryGeneratedColumn()
   id: number;
@@ -13,7 +13,7 @@ export class Slot {
   @ManyToOne(() => Availability, { onDelete: 'CASCADE' })
   availability: Availability;
 
-  @Column({ type: 'date' })
+  @Column()
   slotDate: string;
 
   @Column()
