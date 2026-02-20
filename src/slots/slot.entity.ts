@@ -1,7 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  Index,
+} from 'typeorm';
 import { Doctor } from '../doctors/doctor.entity';
 import { Availability } from '../availability/availability.entity';
 
+@Index(['doctor', 'slotDate'])
 @Entity()
 export class Slot {
   @PrimaryGeneratedColumn()
@@ -13,13 +20,13 @@ export class Slot {
   @ManyToOne(() => Availability, { onDelete: 'CASCADE' })
   availability: Availability;
 
-  @Column()
+  @Column({ type: 'date' })
   slotDate: string;
 
-  @Column()
+  @Column({ type: 'time' })
   startTime: string;
 
-  @Column()
+  @Column({ type: 'time' })
   endTime: string;
 
   @Column()
@@ -27,4 +34,7 @@ export class Slot {
 
   @Column({ default: 0 })
   bookedCount: number;
+
+  @Column({ default: 10 })
+  reportingTime: number;
 }
