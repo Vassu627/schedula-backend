@@ -1,32 +1,31 @@
-import { IsEnum, IsOptional, IsNumber, IsString } from 'class-validator';
 import { AvailabilityType, SchedulingType } from '../availability.entity';
 
+export enum DayOfWeek {
+  MONDAY = 'MONDAY',
+  TUESDAY = 'TUESDAY',
+  WEDNESDAY = 'WEDNESDAY',
+  THURSDAY = 'THURSDAY',
+  FRIDAY = 'FRIDAY',
+  SATURDAY = 'SATURDAY',
+  SUNDAY = 'SUNDAY',
+}
+
 export class SetAvailabilityDto {
-  @IsEnum(AvailabilityType)
   availabilityType: AvailabilityType;
 
-  @IsOptional()
-  @IsNumber()
-  dayOfWeek?: number;
+  startDate?: string;
+  endDate?: string;
 
-  @IsOptional()
-  @IsString()
+  daysOfWeek?: DayOfWeek[];
+
   date?: string;
 
-  @IsString()
   startTime: string;
-
-  @IsString()
   endTime: string;
 
-  @IsOptional()
-  @IsNumber()
+  schedulingType: SchedulingType;
+
   slotDuration?: number;
 
-  @IsOptional()
-  @IsNumber()
-  maxPatientsPerSlot?: number;
-
-  @IsEnum(SchedulingType)
-  schedulingType: SchedulingType;
+  capacity: number;
 }
