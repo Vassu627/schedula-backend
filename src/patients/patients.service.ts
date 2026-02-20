@@ -19,6 +19,13 @@ export class PatientsService {
     private appointmentRepo: Repository<Appointment>,
   ) {}
 
+  async findByUserId(userId: number) {
+    return this.patientRepo.findOne({
+      where: { user: { id: userId } },
+      relations: ['user'],
+    });
+  }
+
   async updateProfile(
     userId: number,
     data: {
@@ -40,33 +47,6 @@ export class PatientsService {
 
     return this.patientRepo.save(patient);
   }
-
-  /* async bookAppointment(userId: number, doctorId: number, time: Date) {
-    const patient = await this.patientRepo.findOne({
-      where: { user: { id: userId } },
-      relations: ['user'],
-    });
-
-    if (!patient) {
-      throw new Error('Patient not found');
-    }
-
-    const doctor = await this.doctorRepo.findOne({
-      where: { id: doctorId },
-    });
-
-    if (!doctor) {
-      throw new Error('Doctor not found');
-    }
-
-    const appointment = new Appointment();
-    appointment.doctor = doctor;
-    appointment.patient = patient;
-    appointment.slot = slot;
-
-    return this.appointmentRepo.save(appointment);
-  }
-    */
 
   async getAppointments(userId: number) {
     const patient = await this.patientRepo.findOne({
