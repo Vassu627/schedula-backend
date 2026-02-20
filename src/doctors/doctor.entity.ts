@@ -36,4 +36,5 @@ export class Doctor {
 
   @OneToOne(() => DoctorProfile, (profile) => profile.doctor)
   profile: DoctorProfile;
+  specialization: any;
 }
