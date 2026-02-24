@@ -11,6 +11,7 @@ interface GoogleUser {
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor() {
+    console.log('CALLBACK URL:', process.env.GOOGLE_CALLBACK_URL);
     super({
       clientID: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
