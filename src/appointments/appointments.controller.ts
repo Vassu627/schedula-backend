@@ -49,4 +49,31 @@ export class AppointmentsController {
   getMyAppointments(@Req() req) {
     return this.appointmentsService.getPatientAppointments(req.user.sub);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('analytics/today')
+  getTodayAnalytics() {
+    return this.appointmentsService.getTodayAnalytics();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('doctor/analytics')
+  getAnalytics(@Req() req) {
+    return this.appointmentsService.getDoctorAnalytics(req.user.sub);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('doctor/analytics/:range')
+  getAnalyticsByRange(@Req() req, @Param('range') range: 'today' | 'week') {
+    return this.appointmentsService.getDoctorAnalyticsByRange(
+      req.user.sub,
+      range,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('doctor/analytics/peak-hours')
+  getPeakHours(@Req() req) {
+    return this.appointmentsService.getPeakHours(req.user.sub);
+  }
 }
