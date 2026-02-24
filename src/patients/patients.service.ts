@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Patient } from './patient.entity';
@@ -39,7 +39,7 @@ export class PatientsService {
     });
 
     if (!patient) {
-      throw new Error('Patient not found');
+      throw new NotFoundException('Patient not found');
     }
 
     patient.age = data.age ?? patient.age;
