@@ -77,6 +77,11 @@ export class DoctorsService {
 
     return qb.getMany();
   }
+  async findByUserId(userId: number) {
+    return this.doctorRepo.findOne({
+      where: { user: { id: userId } },
+    });
+  }
   async getDoctorsWithNextAvailability() {
     const doctors = await this.doctorRepo.find({
       relations: ['user'],

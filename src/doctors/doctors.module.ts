@@ -10,5 +10,6 @@ import { Slot } from 'src/slots/slot.entity';
   imports: [TypeOrmModule.forFeature([Doctor, Appointment, Slot])],
   controllers: [DoctorsController],
   providers: [DoctorsService],
+  exports: [DoctorsService],
 })
 export class DoctorsModule {}
