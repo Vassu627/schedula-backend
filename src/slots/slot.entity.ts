@@ -34,6 +34,14 @@ export class Slot {
 
   @Column({ default: 0 })
   bookedCount: number;
+  @Column({ nullable: true })
+  currentDuration: number;
+
+  @Column({ default: false })
+  isElastic: boolean;
+
+  @Column({ nullable: true })
+  originalDuration: number;
 
   @Column({ default: 10 })
   reportingTime: number;
