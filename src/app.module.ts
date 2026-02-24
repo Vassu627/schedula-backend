@@ -11,6 +11,10 @@ import { DoctorProfilesModule } from './doctor-profiles/doctor-profiles.module';
 import { SpecializationsModule } from './specializations/specializations.module';
 import { AvailabilityModule } from './availability/availability.module';
 import { SlotsModule } from './slots/slots.module';
+import { NotificationModule } from './notifications/notification.module';
+import { EngagementModule } from './engagement/engagement.module';
+import { ScheduleModule } from '@nestjs/schedule';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -38,6 +42,9 @@ import { SlotsModule } from './slots/slots.module';
     SpecializationsModule,
     AvailabilityModule,
     SlotsModule,
+    NotificationModule,
+    EngagementModule,
+    ScheduleModule.forRoot(),
   ],
 })
 export class AppModule {}
