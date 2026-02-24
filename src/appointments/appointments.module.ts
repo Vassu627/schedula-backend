@@ -6,11 +6,14 @@ import { Doctor } from '../doctors/doctor.entity';
 import { AppointmentsService } from './appointments.service';
 import { AppointmentsController } from './appointments.controller';
 import { PatientsModule } from '../patients/patients.module';
-
+import { NotificationModule } from 'src/notifications/notification.module';
+import { DoctorsModule } from 'src/doctors/doctors.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Appointment, Slot, Doctor]),
     PatientsModule,
+    NotificationModule,
+    DoctorsModule,
   ],
   providers: [AppointmentsService],
   controllers: [AppointmentsController],
