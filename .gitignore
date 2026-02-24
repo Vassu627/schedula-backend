@@ -1,12 +1,18 @@
+# =========================
 # Dependencies
+# =========================
 node_modules/
 
+# =========================
 # Build output
+# =========================
 dist/
 build/
 .next/
 
+# =========================
 # Logs
+# =========================
 logs/
 *.log
 npm-debug.log*
@@ -14,19 +20,27 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Env
+# =========================
+# Environment variables
+# =========================
 .env
 .env.*
 !.env.example
 
+# =========================
 # Testing
+# =========================
 coverage/
 .nyc_output/
 
-# OS
+# =========================
+# OS files
+# =========================
 .DS_Store
 
-# IDE
+# =========================
+# IDE / Editor
+# =========================
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -34,17 +48,24 @@ coverage/
 !.vscode/extensions.json
 
 .idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
 *.sublime-workspace
 
-# Temp
+# =========================
+# Temp / Runtime
+# =========================
 .temp/
 .tmp/
-
-# Runtime
 pids/
 *.pid
 *.seed
 *.pid.lock
 
+# =========================
 # Reports
+# =========================
 report.*.json
