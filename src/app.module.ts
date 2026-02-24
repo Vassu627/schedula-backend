@@ -14,6 +14,7 @@ import { SlotsModule } from './slots/slots.module';
 import { NotificationModule } from './notifications/notification.module';
 import { EngagementModule } from './engagement/engagement.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { HealthController } from './health/health.controller';
 
 @Module({
   imports: [
@@ -23,15 +24,13 @@ import { ScheduleModule } from '@nestjs/schedule';
 
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST || 'localhost',
-      port: parseInt(process.env.DB_PORT || '5432'),
-      username: process.env.DB_USER || 'postgres',
-      password: String(process.env.DB_PASS || 'postgres'),
-      database: process.env.DB_NAME || 'schedula',
+      url: process.env.DATABASE_URL,
       autoLoadEntities: true,
       synchronize: true,
+      ssl: process.env.DATABASE_URL?.includes('render')
+        ? { rejectUnauthorized: false }
+        : false,
     }),
-
     HelloModule,
     UsersModule,
     AuthModule,
@@ -46,5 +45,6 @@ import { ScheduleModule } from '@nestjs/schedule';
     EngagementModule,
     ScheduleModule.forRoot(),
   ],
+  controllers: [HealthController],
 })
 export class AppModule {}

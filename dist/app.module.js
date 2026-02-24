@@ -23,6 +23,7 @@ const slots_module_1 = require("./slots/slots.module");
 const notification_module_1 = require("./notifications/notification.module");
 const engagement_module_1 = require("./engagement/engagement.module");
 const schedule_1 = require("@nestjs/schedule");
+const health_controller_1 = require("./health/health.controller");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -34,13 +35,12 @@ exports.AppModule = AppModule = __decorate([
             }),
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'postgres',
-                host: process.env.DB_HOST || 'localhost',
-                port: parseInt(process.env.DB_PORT || '5432'),
-                username: process.env.DB_USER || 'postgres',
-                password: String(process.env.DB_PASS || 'postgres'),
-                database: process.env.DB_NAME || 'schedula',
+                url: process.env.DATABASE_URL,
                 autoLoadEntities: true,
                 synchronize: true,
+                ssl: process.env.DATABASE_URL?.includes('render')
+                    ? { rejectUnauthorized: false }
+                    : false,
             }),
             hello_module_1.HelloModule,
             users_module_1.UsersModule,
@@ -56,6 +56,7 @@ exports.AppModule = AppModule = __decorate([
             engagement_module_1.EngagementModule,
             schedule_1.ScheduleModule.forRoot(),
         ],
+        controllers: [health_controller_1.HealthController],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
