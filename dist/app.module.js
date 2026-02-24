@@ -20,6 +20,9 @@ const doctor_profiles_module_1 = require("./doctor-profiles/doctor-profiles.modu
 const specializations_module_1 = require("./specializations/specializations.module");
 const availability_module_1 = require("./availability/availability.module");
 const slots_module_1 = require("./slots/slots.module");
+const notification_module_1 = require("./notifications/notification.module");
+const engagement_module_1 = require("./engagement/engagement.module");
+const schedule_1 = require("@nestjs/schedule");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -49,6 +52,9 @@ exports.AppModule = AppModule = __decorate([
             specializations_module_1.SpecializationsModule,
             availability_module_1.AvailabilityModule,
             slots_module_1.SlotsModule,
+            notification_module_1.NotificationModule,
+            engagement_module_1.EngagementModule,
+            schedule_1.ScheduleModule.forRoot(),
         ],
     })
 ], AppModule);
