@@ -24,7 +24,6 @@ import { HealthController } from './health/health.controller';
 
     TypeOrmModule.forRoot({
       type: 'postgres',
-<<<<<<< HEAD
 
       ...(process.env.DATABASE_URL
         ? {
@@ -45,14 +44,12 @@ import { HealthController } from './health/health.controller';
       autoLoadEntities: true,
       synchronize: process.env.NODE_ENV !== 'production',
       logging: true,
-=======
       url: process.env.DATABASE_URL,
       autoLoadEntities: true,
       synchronize: true,
       ssl: process.env.DATABASE_URL?.includes('render')
         ? { rejectUnauthorized: false }
         : false,
->>>>>>> 2e09356 (ready for render deploy)
     }),
     HelloModule,
     UsersModule,
