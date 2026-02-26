@@ -24,6 +24,26 @@ import { HealthController } from './health/health.controller';
 
     TypeOrmModule.forRoot({
       type: 'postgres',
+
+      ...(process.env.DATABASE_URL
+        ? {
+            url: process.env.DATABASE_URL,
+            ssl:
+              process.env.DB_SSL === 'true'
+                ? { rejectUnauthorized: false }
+                : false,
+          }
+        : {
+            host: process.env.DB_HOST,
+            port: Number(process.env.DB_PORT),
+            username: process.env.DB_USERNAME,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME,
+          }),
+
+      autoLoadEntities: true,
+      synchronize: process.env.NODE_ENV !== 'production',
+      logging: true,
       url: process.env.DATABASE_URL,
       autoLoadEntities: true,
       synchronize: true,
