@@ -231,6 +231,7 @@ export class AvailabilityService {
         endTime: availability.endTime,
         maxPatients: availability.capacity,
         bookedCount: 0,
+        originalDuration: availability.slotDuration,
       });
     }
 
@@ -246,6 +247,7 @@ export class AvailabilityService {
           endTime: this.minutesToTime(current + availability.slotDuration),
           maxPatients: availability.capacity,
           bookedCount: 0,
+          originalDuration: availability.slotDuration,
         });
 
         current += availability.slotDuration;

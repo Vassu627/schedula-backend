@@ -268,7 +268,6 @@ export class AppointmentsService {
       ).length,
     };
   }
-  // ================= DOCTOR ANALYTICS =================
   async getDoctorAnalytics(userId: number) {
     const doctor = await this.doctorsService.findByUserId(userId);
     if (!doctor) throw new NotFoundException('Doctor not found');
